@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:sentinel;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: localhost:19092
+
+sentinel:
+  security:
+    api-key: integration-test-key
+  outbox:
+    enabled: false
+    topic: risk.decisions.test
+    fixed-delay: 60000
+    send-timeout: 1s
+
+logging:
+  level:
+    root: WARN
