@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class JpaRiskAnalysisAdapter implements RiskAnalysisPort {
@@ -22,6 +23,12 @@ public class JpaRiskAnalysisAdapter implements RiskAnalysisPort {
     public Optional<StoredAnalysis> findByIdempotencyKey(String idempotencyKey) {
         return repository.findByIdempotencyKey(idempotencyKey)
                 .map(RiskAnalysisEntity::toStoredAnalysis);
+    }
+
+    @Override
+    public Optional<RiskAssessment> findById(UUID analysisId) {
+        return repository.findById(analysisId)
+                .map(entity -> entity.toStoredAnalysis().assessment());
     }
 
     @Override

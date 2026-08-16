@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: sentinel-risk-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sentinel}
+    username: ${DB_USERNAME:sentinel}
+    password: ${DB_PASSWORD:sentinel}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+  task:
+    scheduling:
+      pool:
+        size: 2
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+
+sentinel:
+  security:
+    api-key: ${SENTINEL_API_KEY:local-development-key}
+  outbox:
+    enabled: ${OUTBOX_PUBLISHER_ENABLED:true}
+    topic: ${RISK_DECISION_TOPIC:risk.decisions.v1}
+    fixed-delay: ${OUTBOX_FIXED_DELAY:1000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [correlationId:%X{correlationId:-none}]"
