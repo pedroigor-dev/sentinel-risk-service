@@ -70,6 +70,14 @@ public class OutboxEventEntity {
         return status == OutboxStatus.PENDING;
     }
 
+    int attempts() {
+        return attempts;
+    }
+
+    Instant publishedAt() {
+        return publishedAt;
+    }
+
     void markPublished(Instant publishedAt) {
         this.status = OutboxStatus.PUBLISHED;
         this.publishedAt = publishedAt;
