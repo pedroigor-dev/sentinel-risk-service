@@ -1,13 +1,12 @@
-FROM eclipse-temurin:21-jdk-jammy AS build
+FROM maven:3.9.11-eclipse-temurin-21 AS build
 
 WORKDIR /workspace
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw && ./mvnw --batch-mode --no-transfer-progress dependency:go-offline
+COPY pom.xml ./
+RUN mvn --batch-mode --no-transfer-progress dependency:go-offline
 
 COPY src/ src/
 COPY config/ config/
-RUN ./mvnw --batch-mode --no-transfer-progress -DskipTests package
+RUN mvn --batch-mode --no-transfer-progress -DskipTests package
 
 FROM eclipse-temurin:21-jre-jammy
 
