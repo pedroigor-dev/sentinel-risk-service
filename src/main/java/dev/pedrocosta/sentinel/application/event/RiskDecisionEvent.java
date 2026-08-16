@@ -23,6 +23,10 @@ public record RiskDecisionEvent(
         Instant analyzedAt
 ) {
 
+    public RiskDecisionEvent {
+        factorCodes = List.copyOf(factorCodes);
+    }
+
     public static RiskDecisionEvent from(RiskAssessment assessment, AnalysisCommand command) {
         List<String> factorCodes = assessment.factors().stream()
                 .map(factor -> factor.code())

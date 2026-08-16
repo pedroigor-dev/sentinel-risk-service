@@ -176,6 +176,7 @@
           <effort>Max</effort>
           <threshold>Low</threshold>
           <xmlOutput>true</xmlOutput>
+          <excludeFilterFile>${project.basedir}/config/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
         <executions>
           <execution>

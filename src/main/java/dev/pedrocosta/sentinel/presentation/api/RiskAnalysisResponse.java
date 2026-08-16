@@ -17,6 +17,10 @@ public record RiskAnalysisResponse(
         Instant analyzedAt
 ) {
 
+    public RiskAnalysisResponse {
+        factors = List.copyOf(factors);
+    }
+
     static RiskAnalysisResponse from(RiskAssessment assessment) {
         List<RiskFactorResponse> factors = assessment.factors().stream()
                 .map(factor -> new RiskFactorResponse(

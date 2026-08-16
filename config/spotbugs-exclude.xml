@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!-- Constructor injection deliberately stores application ports managed by Spring. -->
+  <Match>
+    <Class name="dev.pedrocosta.sentinel.application.AnalyzeTransactionService"/>
+    <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+  </Match>
+  <Match>
+    <Class name="dev.pedrocosta.sentinel.application.AnalyzeTransactionService"/>
+    <Field name="outboxPort"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <!-- These collaborators are thread-safe, container-owned infrastructure components. -->
+  <Match>
+    <Class name="dev.pedrocosta.sentinel.infrastructure.outbox.JpaOutboxAdapter"/>
+    <Field name="objectMapper"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="dev.pedrocosta.sentinel.infrastructure.outbox.OutboxPublicationService"/>
+    <Field name="kafkaTemplate"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <!-- HttpSecurity.build() exposes Exception in the Spring Security contract. -->
+  <Match>
+    <Class name="dev.pedrocosta.sentinel.configuration.SecurityConfiguration"/>
+    <Method name="securityFilterChain"/>
+    <Bug pattern="THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"/>
+  </Match>
+</FindBugsFilter>
