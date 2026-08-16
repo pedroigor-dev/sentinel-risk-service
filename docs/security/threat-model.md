@@ -44,4 +44,4 @@ flowchart LR
 - Restringir Kafka e PostgreSQL por rede e identidade de workload.
 - Alertar sobre idade e quantidade de eventos pendentes.
 - Definir retenção, exclusão e trilha de auditoria antes de aceitar dados reais.
-- Testar migrations e concorrência contra PostgreSQL, não apenas H2.
+- Testar migrations e concorrência contra PostgreSQL, em vez de restringir a validação ao H2.
