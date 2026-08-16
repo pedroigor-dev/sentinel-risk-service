@@ -8,10 +8,11 @@
   <module name="FileTabCharacter"/>
   <module name="TreeWalker">
     <module name="AvoidStarImport"/>
-    <module name="EmptyLineSeparator"/>
+    <module name="EmptyLineSeparator">
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
+    </module>
     <module name="EqualsHashCode"/>
     <module name="FinalClass"/>
-    <module name="HideUtilityClassConstructor"/>
     <module name="NeedBraces"/>
     <module name="OneStatementPerLine"/>
     <module name="OuterTypeFilename"/>
