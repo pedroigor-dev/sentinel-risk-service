@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If this project helped your research or teaching, cite it with these metadata."
+title: "Sentinel Risk Service"
+type: software
+authors:
+  - family-names: "Costa"
+    given-names: "Pedro"
+repository-code: "https://github.com/pedroigor-dev/sentinel-risk-service"
+license: MIT
+version: 1.0.0
+date-released: 2026-08-16
