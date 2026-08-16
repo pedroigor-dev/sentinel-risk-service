@@ -66,6 +66,10 @@ public class OutboxEventEntity {
         return payload;
     }
 
+    boolean isPending() {
+        return status == OutboxStatus.PENDING;
+    }
+
     void markPublished(Instant publishedAt) {
         this.status = OutboxStatus.PUBLISHED;
         this.publishedAt = publishedAt;

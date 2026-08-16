@@ -32,6 +32,7 @@ sentinel:
     enabled: ${OUTBOX_PUBLISHER_ENABLED:true}
     topic: ${RISK_DECISION_TOPIC:risk.decisions.v1}
     fixed-delay: ${OUTBOX_FIXED_DELAY:1000}
+    send-timeout: ${OUTBOX_SEND_TIMEOUT:5s}
 
 management:
   endpoints:
