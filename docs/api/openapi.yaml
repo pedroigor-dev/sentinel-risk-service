@@ -1,0 +1,190 @@
+openapi: 3.1.0
+info:
+  title: Sentinel Risk Service API
+  version: 1.0.0
+  description: |
+    Scores card transactions with deterministic rules. Every accepted request
+    stores an explainable decision and a transactional outbox event.
+  contact:
+    name: Pedro Costa
+    url: https://github.com/pedroigor-dev
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: http://localhost:8080
+    description: Local environment
+tags:
+  - name: Risk analyses
+paths:
+  /api/v1/analyses:
+    post:
+      tags: [Risk analyses]
+      summary: Analyze a transaction
+      operationId: analyzeTransaction
+      security:
+        - ApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeTransactionRequest"
+            examples:
+              suspiciousTransaction:
+                value:
+                  transactionId: tx-2026-0001
+                  customerId: customer-42
+                  amount: 12500.00
+                  currency: BRL
+                  originCountry: BR
+                  cardCountry: US
+                  merchantCategory: "7995"
+                  occurredAt: "2026-08-16T12:00:00Z"
+      responses:
+        "201":
+          description: Decision created or replayed from the idempotency record
+          headers:
+            Location:
+              schema: {type: string, format: uri-reference}
+            X-Correlation-ID:
+              schema: {type: string}
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskAnalysis"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/v1/analyses/{analysisId}:
+    get:
+      tags: [Risk analyses]
+      summary: Retrieve a stored decision
+      operationId: findRiskAnalysis
+      security:
+        - ApiKey: []
+      parameters:
+        - name: analysisId
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "200":
+          description: Stored risk analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskAnalysis"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: A unique key for this logical request. Maximum 100 characters.
+      schema: {type: string, minLength: 1, maxLength: 100}
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: false
+      description: Safe client correlation identifier. The server creates one when omitted.
+      schema:
+        type: string
+        pattern: "^[A-Za-z0-9._-]{1,64}$"
+  schemas:
+    AnalyzeTransactionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - transactionId
+        - customerId
+        - amount
+        - currency
+        - originCountry
+        - cardCountry
+        - merchantCategory
+        - occurredAt
+      properties:
+        transactionId: {type: string, minLength: 1, maxLength: 100}
+        customerId: {type: string, minLength: 1, maxLength: 100}
+        amount: {type: number, minimum: 0.01, multipleOf: 0.01}
+        currency: {type: string, pattern: "^[A-Za-z]{3}$"}
+        originCountry: {type: string, pattern: "^[A-Za-z]{2}$"}
+        cardCountry: {type: string, pattern: "^[A-Za-z]{2}$"}
+        merchantCategory: {type: string, pattern: "^[0-9]{4}$"}
+        occurredAt: {type: string, format: date-time}
+    RiskAnalysis:
+      type: object
+      required:
+        - analysisId
+        - transactionId
+        - customerId
+        - score
+        - decision
+        - factors
+        - analyzedAt
+      properties:
+        analysisId: {type: string, format: uuid}
+        transactionId: {type: string}
+        customerId: {type: string}
+        score: {type: integer, minimum: 0, maximum: 100}
+        decision:
+          type: string
+          enum: [APPROVED, REVIEW, DECLINED]
+        factors:
+          type: array
+          items:
+            $ref: "#/components/schemas/RiskFactor"
+        analyzedAt: {type: string, format: date-time}
+    RiskFactor:
+      type: object
+      required: [code, points, explanation]
+      properties:
+        code: {type: string}
+        points: {type: integer, minimum: 1}
+        explanation: {type: string}
+    Problem:
+      type: object
+      properties:
+        type: {type: string, format: uri}
+        title: {type: string}
+        status: {type: integer}
+        detail: {type: string}
+        instance: {type: string, format: uri-reference}
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
+    Unauthorized:
+      description: Missing or invalid API key
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
+    Conflict:
+      description: Idempotency key conflict
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
+    NotFound:
+      description: Analysis does not exist
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
