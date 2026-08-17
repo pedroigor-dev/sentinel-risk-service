@@ -6,7 +6,7 @@ info:
     Scores card transactions with deterministic rules. Every accepted request
     stores an explainable decision and a transactional outbox event.
   contact:
-    name: Pedro Costa
+    name: Pedro Igor Campos Costa
     url: https://github.com/pedroigor-dev
   license:
     name: MIT

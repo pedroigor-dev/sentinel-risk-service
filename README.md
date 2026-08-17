@@ -173,6 +173,6 @@ src/main/java/dev/pedrocosta/sentinel
 
 ## Autor
 
-Pedro Costa - [GitHub](https://github.com/pedroigor-dev)
+Pedro Igor Campos Costa - [GitHub](https://github.com/pedroigor-dev)
 
 Projeto de portfólio. Não use estas regras para autorizar transações financeiras reais.

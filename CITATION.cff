@@ -4,7 +4,7 @@ title: "Sentinel Risk Service"
 type: software
 authors:
   - family-names: "Costa"
-    given-names: "Pedro"
+    given-names: "Pedro Igor Campos"
 repository-code: "https://github.com/pedroigor-dev/sentinel-risk-service"
 license: MIT
 version: 1.0.0
