@@ -25,7 +25,7 @@
     <spotbugs-plugin.version>4.10.3.0</spotbugs-plugin.version>
     <cyclonedx-plugin.version>2.9.3</cyclonedx-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-    <checkstyle.version>10.26.1</checkstyle.version>
+    <checkstyle.version>13.10.0</checkstyle.version>
   </properties>
 
   <dependencies>
